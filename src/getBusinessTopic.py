@@ -1,3 +1,7 @@
+__doc__ = """
+          Runs the web framework(bottle), returns the businesses with a given rating
+          """
+
 import os
 import time
 import json
@@ -14,12 +18,11 @@ business_collection = MongoClient(Parameters.MONGO_CONNECTION_STRING)[Parameters
 
 topic_rating_collection = MongoClient(Parameters.MONGO_CONNECTION_STRING)[Parameters.REVIEWS_DATABASE][Parameters.TOPIC_RATING_COLLECTION]
 
-topic_id = 50
+#topic_id = 50
+
 def find_by_topic_id(topic_id, rating):
     
-#result = topic_rating_collection.find_one()
     result = topic_rating_collection.find({'ratings.'+str(topic_id):{'$gt': int(rating) }})
-#returns valid collection
     businesses = []
     for a in result:
         fetched_business = {}
@@ -31,10 +34,7 @@ def find_by_topic_id(topic_id, rating):
         if fetched_business['rating'] > rating:
             businesses.append(fetched_business)
     return businesses
-#print find_by_topic_id(50, 4)
-#print businesses
-#db.TopicRating.findOne({ "ratings.10" : { $exists: true }  })
-#db.BusinessInfo.findOne({ '_id' : 'EmzaQR5hQlF0WIl24NxAZA'})
+
 from bottle import route, run, template, static_file, response, request
 
 @route('/')
